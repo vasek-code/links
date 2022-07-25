@@ -15,6 +15,6 @@ function defineNextConfig(config) {
 export default defineNextConfig({
   reactStrictMode: false,
   images: {
-    domains: ["avatars.githubusercontent.com"],
+    domains: ["avatars.githubusercontent.com", "lh3.googleusercontent.com"],
   },
 });
