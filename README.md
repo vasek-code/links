@@ -1,3 +1,15 @@
-# Create T3 App
+# Creating my own version of linktree just for education purposes
 
-This is an app bootstrapped according to the [init.tips](https://init.tips) stack, also known as the T3-Stack.
+## Prerequisites
+
+- posgresql database
+
+## How to start project
+
+
+```
+npm i
+
+npm run dev
+```
+
