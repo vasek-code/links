@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@chakra-ui/react": "^2.2.4",
+    "@cloudinary/react": "^1.4.2",
+    "@cloudinary/url-gen": "^1.8.5",
     "@emotion/react": "^11.9.3",
     "@emotion/styled": "^11.9.3",
     "@next-auth/prisma-adapter": "^1.0.4",

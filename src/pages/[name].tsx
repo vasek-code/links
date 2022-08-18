@@ -82,9 +82,12 @@ const UserPage: NextPage = () => {
           </Text>
         </Flex>
         <Flex flexDir="column" w="100%">
-          {userQuery?.data?.links?.map((link) => {
-            return <LinkComponent link={link} key={link.id} />;
-          })}
+          {userQuery?.data?.links
+            ?.slice()
+            .reverse()
+            .map((link) => {
+              return <LinkComponent link={link} key={link.id} />;
+            })}
         </Flex>
       </Container>
     </Flex>

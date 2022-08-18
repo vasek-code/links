@@ -34,12 +34,28 @@ export const userRouter = t.router({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      console.log(ctx.session);
-
       const user = await ctx.prisma.user.update({
         data: {
           name: input.name,
           bio: input.bio,
+        },
+        where: {
+          id: ctx.session.user.id,
+        },
+      });
+
+      return user;
+    }),
+  updateIcon: protectedProcedure
+    .input(
+      z.object({
+        url: z.string().url(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const user = await ctx.prisma.user.update({
+        data: {
+          image: input.url,
         },
         where: {
           id: ctx.session.user.id,

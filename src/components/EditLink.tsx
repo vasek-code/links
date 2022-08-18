@@ -3,6 +3,7 @@ import { Link } from "@prisma/client";
 import React, { useState } from "react";
 import { BsFillPencilFill } from "react-icons/bs";
 import { IoTrashOutline } from "react-icons/io5";
+import { reloadIframe } from "../utils/reload-iframe";
 import { reloadSession } from "../utils/reload-session";
 import { trpc } from "../utils/trpc";
 
@@ -16,9 +17,7 @@ export const EditLink: React.FC<{
   });
   const deleteLink = trpc.proxy.link.deleteLink.useMutation({
     onSuccess: () => {
-      (
-        document?.getElementById("iframe-ref") as HTMLIFrameElement
-      )?.contentWindow?.location.reload();
+      reloadIframe();
       reloadSession();
     },
   });
@@ -105,7 +104,14 @@ export const EditLink: React.FC<{
         </Flex>
       </Flex>
       <Flex flexDir="column" h="100%" w="100%" p="20px" gap="10px">
-        <Button colorScheme="green" onClick={handleSave}>
+        <Button
+          background="#7c41ff"
+          _hover={{
+            background: "#a071ff",
+          }}
+          onClick={handleSave}
+          disabled={title === link.text && url === link.linkUrl ? true : false}
+        >
           Save
         </Button>
         <IconButton

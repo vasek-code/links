@@ -61,7 +61,7 @@ export const CreateLink: React.FC<{
         pl="20px"
         h="max"
       >
-        <Flex flexDir={"column"} w="100%" gap="5px">
+        <Flex flexDir={"column"} w="100%" gap="5px" fontSize="15px">
           <AnimatedInput
             label="Title"
             onChange={(e) => {
@@ -82,7 +82,14 @@ export const CreateLink: React.FC<{
           />
         </Flex>
         <Flex w="100%" align="center" justify="center" p="20px">
-          <Button colorScheme="green" w="100%" onClick={handleCreate}>
+          <Button
+            w="100px"
+            background="#7c41ff"
+            _hover={{
+              background: "#a071ff",
+            }}
+            onClick={handleCreate}
+          >
             Create
           </Button>
         </Flex>

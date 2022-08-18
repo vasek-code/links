@@ -68,7 +68,7 @@ export const linkRouter = t.router({
         data: {
           linkUrl: input.linkUrl,
           text: input.text,
-          userId: ctx.session.user.id,
+          userId: ctx.session.user.id as string,
         },
       });
 

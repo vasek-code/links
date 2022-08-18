@@ -20,6 +20,7 @@ export default defineNextConfig({
       "lh3.googleusercontent.com",
       "static-cdn.jtvnw.net",
       "assets.production.linktr.ee",
+      "res.cloudinary.com",
     ],
   },
 });

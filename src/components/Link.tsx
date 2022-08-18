@@ -106,7 +106,7 @@ export const LinkComponent: React.FC<{
           className="sc-bdfBwQ StyledContainer__StyledLinkContainer-sc-1kae6sc-0 hBNyQA eaMbDs"
         >
           <a
-            href={`https://${link.linkUrl}`}
+            href={`${link.linkUrl}`}
             target="_blank"
             rel="noopener noreferrer"
             data-testid="LinkButton"

@@ -1,7 +1,7 @@
 import { Flex, Text, Input, Button, IconButton } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { AnimatedInput } from "../../components/AnimatedInput";
 import { AnimatedTextarea } from "../../components/AnimatedTextarea";
 import { Loader } from "../../components/Loader";
@@ -9,6 +9,7 @@ import { reloadSession } from "../../utils/reload-session";
 import { trpc } from "../../utils/trpc";
 import Image from "next/image";
 import { NextPage } from "next";
+import { reloadIframe } from "../../utils/reload-iframe";
 
 const AppearancePage: NextPage = () => {
   const { data, status } = useSession();
@@ -16,10 +17,42 @@ const AppearancePage: NextPage = () => {
   const [name, setName] = useState("");
   const [bio, setBio] = useState("");
 
-  const userMutation = trpc.proxy.user.updateUser.useMutation();
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const userUpdateMutation = trpc.proxy.user.updateUser.useMutation();
+  const userIconMutation = trpc.proxy.user.updateIcon.useMutation();
+
+  async function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const formData = new FormData();
+
+    for (const file of e.target.files as FileList) {
+      formData.append("file", file);
+    }
+
+    formData.append("upload_preset", "zqys6llm");
+
+    const res = await fetch(
+      "https://api.cloudinary.com/v1_1/dvez2ui2g/image/upload",
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+
+    if (!res.ok) return;
+
+    const data = await res.json();
+
+    const user = await userIconMutation.mutateAsync({
+      url: data.secure_url,
+    });
+
+    reloadSession();
+    reloadIframe();
+  }
 
   function handleSave() {
-    const user = userMutation.mutateAsync(
+    const user = userUpdateMutation.mutateAsync(
       {
         bio: bio ? bio : (data?.user?.bio as string),
         name: name ? name : (data?.user?.name as string),
@@ -27,9 +60,7 @@ const AppearancePage: NextPage = () => {
       {
         onSuccess: () => {
           reloadSession();
-          (
-            document.getElementById("iframe-ref") as HTMLIFrameElement
-          ).contentWindow?.location.reload();
+          reloadIframe();
         },
       }
     );
@@ -75,12 +106,23 @@ const AppearancePage: NextPage = () => {
                 gap="10px"
                 w="100%"
               >
+                <input
+                  type="file"
+                  style={{
+                    display: "none",
+                  }}
+                  ref={fileRef}
+                  onChange={handleChange}
+                />
                 <Button
                   w="400px"
                   color="white"
                   background="#7c41ff"
                   _hover={{
                     background: "#a071ff",
+                  }}
+                  onClick={() => {
+                    fileRef.current?.click();
                   }}
                 >
                   Pick an image
@@ -106,7 +148,7 @@ const AppearancePage: NextPage = () => {
                 value={bio}
               />
               <Flex w="100%" justify="flex-end">
-                {userMutation.isLoading ? (
+                {userUpdateMutation.isLoading ? (
                   <IconButton
                     aria-label="loader"
                     w="100px"

@@ -5,6 +5,7 @@ import Link from "next/link";
 import React, { createRef, useEffect, useRef, useState } from "react";
 import { CreateLink } from "../../components/CreateLink";
 import { EditLink } from "../../components/EditLink";
+import { reloadIframe } from "../../utils/reload-iframe";
 
 const ConfigurePage: NextPage = () => {
   const { data: session, status } = useSession();
@@ -21,7 +22,10 @@ const ConfigurePage: NextPage = () => {
         <Button
           w="600px"
           size="lg"
-          colorScheme="green"
+          background="#7c41ff"
+          _hover={{
+            background: "#a071ff",
+          }}
           onClick={() => {
             setCreateLink(!createLink);
           }}
@@ -34,15 +38,16 @@ const ConfigurePage: NextPage = () => {
               setCreateLink(false);
             }}
             onSuccess={() => {
-              (
-                document.getElementById("iframe-ref") as HTMLIFrameElement
-              ).contentWindow?.location.reload();
+              reloadIframe();
             }}
           />
         )}
-        {session?.user?.links?.map((link) => {
-          return <EditLink key={link.id} link={link} />;
-        })}
+        {session?.user?.links
+          ?.slice()
+          .reverse()
+          .map((link) => {
+            return <EditLink key={link.id} link={link} />;
+          })}
       </Flex>
     </Flex>
   );
