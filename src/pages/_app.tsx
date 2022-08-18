@@ -1,21 +1,32 @@
 // src/pages/_app.tsx
+import "../styles/globals.css";
+
 import { withTRPC } from "@trpc/next";
 import type { AppRouter } from "../server/router";
 import type { AppType } from "next/dist/shared/lib/utils";
 import superjson from "superjson";
 import { SessionProvider } from "next-auth/react";
-import "../styles/globals.css";
 import { ChakraProvider } from "@chakra-ui/react";
 import { theme } from "../chakra/config";
+import { useRouter } from "next/router";
+import { ConfLayout } from "../components/layouts/ConfLayout";
 
 const MyApp: AppType = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
+  const router = useRouter();
+
   return (
     <SessionProvider session={session}>
       <ChakraProvider theme={theme}>
-        <Component {...pageProps} />
+        {router.pathname.startsWith("/configure") ? (
+          <ConfLayout>
+            <Component {...pageProps} />
+          </ConfLayout>
+        ) : (
+          <Component {...pageProps} />
+        )}
       </ChakraProvider>
     </SessionProvider>
   );

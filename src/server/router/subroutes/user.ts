@@ -1,8 +1,8 @@
 import { createRouter } from "../trpc/context";
 import { z } from "zod";
-import * as trpc from "@trpc/server";
 import { User } from "@prisma/client";
 import { t } from "../trpc";
+import { protectedProcedure } from "../utils/protected-procedure";
 
 export const userRouter = t.router({
   getByName: t.procedure
@@ -21,6 +21,28 @@ export const userRouter = t.router({
           image: true,
           name: true,
           bio: true,
+        },
+      });
+
+      return user;
+    }),
+  updateUser: protectedProcedure
+    .input(
+      z.object({
+        name: z.string().optional(),
+        bio: z.string().optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      console.log(ctx.session);
+
+      const user = await ctx.prisma.user.update({
+        data: {
+          name: input.name,
+          bio: input.bio,
+        },
+        where: {
+          id: ctx.session.user.id,
         },
       });
 
