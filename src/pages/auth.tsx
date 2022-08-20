@@ -6,6 +6,8 @@ import { Logo } from "../components/Logo";
 import { FcGoogle } from "react-icons/fc";
 import { BsTwitch, BsGithub } from "react-icons/bs";
 import { signIn } from "next-auth/react";
+import { unstable_getServerSession } from "next-auth/next";
+import { authOptions } from "./api/auth/[...nextauth]";
 
 const AuthPage: NextPage = () => {
   const buttonSize = ["md", "md", "lg", "lg"];
@@ -69,6 +71,24 @@ const AuthPage: NextPage = () => {
       </Flex>
     </>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  const session = await unstable_getServerSession(req, res, authOptions);
+
+  if (session?.user) {
+    return {
+      props: {},
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
 };
 
 export default AuthPage;

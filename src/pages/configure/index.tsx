@@ -1,11 +1,13 @@
 import { Button, Flex } from "@chakra-ui/react";
-import { NextPage } from "next";
+import { GetServerSideProps, NextPage } from "next";
+import { unstable_getServerSession } from "next-auth/next";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import React, { createRef, useEffect, useRef, useState } from "react";
 import { CreateLink } from "../../components/CreateLink";
 import { EditLink } from "../../components/EditLink";
 import { reloadIframe } from "../../utils/reload-iframe";
+import { authOptions } from "../api/auth/[...nextauth]";
 
 const ConfigurePage: NextPage = () => {
   const { data: session, status } = useSession();
@@ -51,6 +53,24 @@ const ConfigurePage: NextPage = () => {
       </Flex>
     </Flex>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  const session = await unstable_getServerSession(req, res, authOptions);
+
+  if (!session?.user) {
+    return {
+      props: {},
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
 };
 
 export default ConfigurePage;

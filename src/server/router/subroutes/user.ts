@@ -64,4 +64,31 @@ export const userRouter = t.router({
 
       return user;
     }),
+  deleteAccount: protectedProcedure.mutation(async ({ ctx }) => {
+    const link = await ctx.prisma.link.deleteMany({
+      where: {
+        userId: ctx.session.user.id,
+      },
+    });
+
+    const user = await ctx.prisma.user.deleteMany({
+      where: {
+        id: ctx.session.user.id,
+      },
+    });
+
+    const account = await ctx.prisma.account.deleteMany({
+      where: {
+        userId: ctx.session.user.id,
+      },
+    });
+
+    const session = await ctx.prisma.session.deleteMany({
+      where: {
+        userId: ctx.session.user.id,
+      },
+    });
+
+    return [user, account, session, link];
+  }),
 });

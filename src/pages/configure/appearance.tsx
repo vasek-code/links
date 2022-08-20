@@ -8,8 +8,10 @@ import { Loader } from "../../components/Loader";
 import { reloadSession } from "../../utils/reload-session";
 import { trpc } from "../../utils/trpc";
 import Image from "next/image";
-import { NextPage } from "next";
+import { GetServerSideProps, NextPage } from "next";
 import { reloadIframe } from "../../utils/reload-iframe";
+import { unstable_getServerSession } from "next-auth/next";
+import { authOptions } from "../api/auth/[...nextauth]";
 
 const AppearancePage: NextPage = () => {
   const { data, status } = useSession();
@@ -177,6 +179,24 @@ const AppearancePage: NextPage = () => {
       </Flex>
     </Flex>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  const session = await unstable_getServerSession(req, res, authOptions);
+
+  if (!session?.user) {
+    return {
+      props: {},
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
 };
 
 export default AppearancePage;
